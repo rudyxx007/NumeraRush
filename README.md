@@ -1,6 +1,9 @@
 # NumeraRush
 
-A real-time multiplayer mental-arithmetic arena where players construct target numbers from shared card sets using basic operations. Built with exact rational arithmetic (BigInt fractions), server-authoritative WebSocket gameplay, and local-first PowerSync replication.
+A real-time multiplayer mental-arithmetic arena.
+
+## Brief Description
+NumeraRush is a real-time multiplayer mental-arithmetic game where players construct target numbers from shared card sets using basic operations. Built with exact rational arithmetic (BigInt fractions), server-authoritative WebSocket gameplay, and local-first PowerSync replication for live leaderboards.
 
 ## Demo
 
