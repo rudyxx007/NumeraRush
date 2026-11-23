@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+pnpm-lockfile/
+
+# Environment variables
+.env*
+!.env.example
+
+# Build outputs
+dist/
+*.tgz
+
+# Coverage reports
+coverage/
+*.log
+
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Binary runtime artifacts
+*.wasm
+*.profraw
+
+# Debug symbols
+*.db
+*.sqlite
