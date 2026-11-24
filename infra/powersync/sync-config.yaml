@@ -1,0 +1,15 @@
+config:
+  edition: 3
+
+streams:
+  live_race:
+    auto_subscribe: true
+    query: SELECT * FROM live_progress
+
+  leaderboard:
+    auto_subscribe: true
+    query: SELECT * FROM match_results
+
+  player_rankings:
+    auto_subscribe: true
+    query: SELECT * FROM player_stats

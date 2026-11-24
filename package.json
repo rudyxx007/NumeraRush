@@ -1,0 +1,26 @@
+{
+  "name": "numera-rush",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @numera/server --filter @numera/web dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "check": "biome check .",
+    "check:fix": "biome check --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "@swc/core": "1.12.14",
+      "@swc/wasm": "1.12.14"
+    }
+  }
+}

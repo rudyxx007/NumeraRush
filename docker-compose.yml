@@ -1,0 +1,29 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      HOST: 0.0.0.0
+      CORS_ORIGIN: http://localhost:5173
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+
+  web:
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "corepack enable && pnpm install --frozen-lockfile && pnpm --filter @numera/web dev --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_WS_URL: ws://localhost:4000/ws
+      VITE_SUPABASE_URL: ${SUPABASE_URL}
+      VITE_SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+      VITE_POWERSYNC_URL: ${POWERSYNC_URL}
+    volumes:
+      - .:/app
+    depends_on:
+      - server

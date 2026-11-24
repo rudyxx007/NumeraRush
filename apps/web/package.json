@@ -1,0 +1,35 @@
+{
+  "name": "@numera/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@journeyapps/wa-sqlite": "^2.0.0",
+    "@numera/shared": "workspace:*",
+    "@powersync/react": "^2.2.1",
+    "@powersync/web": "^2.7.0",
+    "@supabase/supabase-js": "^2.49.1",
+    "lucide-react": "^1.79.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@webgpu/types": "^0.1.60",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5.6.3",
+    "vite": "^6.1.0",
+    "vite-plugin-top-level-await": "^1.6.0",
+    "vite-plugin-wasm": "^3.4.1"
+  }
+}
