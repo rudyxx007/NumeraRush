@@ -1,10 +1,15 @@
 import { X } from 'lucide-react';
+import { useRef } from 'react';
+import { useModalDialog } from '../hooks/useModalDialog';
 import { useGameStore } from '../store/game-store';
 
 export function RoundSummaryModal() {
   const summary = useGameStore((state) => state.roundSummary);
   const userId = useGameStore((state) => state.userId);
   const dismiss = useGameStore((state) => state.dismissRoundSummary);
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+
+  useModalDialog(dialogRef, summary !== null, dismiss);
 
   if (!summary) return null;
 
@@ -15,6 +20,7 @@ export function RoundSummaryModal() {
   return (
     <div className="veil">
       <dialog
+        ref={dialogRef}
         open
         aria-modal="true"
         aria-label={`Round ${summary.roundNumber} summary`}

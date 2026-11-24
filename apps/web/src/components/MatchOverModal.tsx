@@ -1,4 +1,6 @@
 import { ArrowLeft, RotateCcw, X } from 'lucide-react';
+import { useRef } from 'react';
+import { useModalDialog } from '../hooks/useModalDialog';
 import { exitRoom } from '../lib/route';
 import { useGameStore } from '../store/game-store';
 
@@ -11,6 +13,9 @@ export function MatchOverModal() {
   const userId = useGameStore((state) => state.userId);
   const rematch = useGameStore((state) => state.rematch);
   const dismiss = useGameStore((state) => state.dismissMatchOver);
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+
+  useModalDialog(dialogRef, matchOver !== null, dismiss);
 
   if (!matchOver) return null;
 
@@ -21,6 +26,7 @@ export function MatchOverModal() {
   return (
     <div className="veil">
       <dialog
+        ref={dialogRef}
         open
         aria-modal="true"
         aria-label="Match results"
