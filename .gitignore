@@ -27,3 +27,5 @@ coverage/
 # Debug symbols
 *.db
 *.sqlite
+# Local review screenshots
+.preview/
