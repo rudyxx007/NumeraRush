@@ -10,6 +10,7 @@ import { RoundSummaryModal } from './components/RoundSummaryModal';
 import { WaitingRoom } from './components/WaitingRoom';
 import { readDevScene, seedDevScene } from './lib/dev-seed';
 import { markLobbyView, pushRoomView, replaceLobbyView, roomCodeFromUrl } from './lib/route';
+import { useFxStore } from './store/fx-store';
 import { useGameStore } from './store/game-store';
 
 function ErrorToast() {
@@ -50,6 +51,7 @@ function ErrorToast() {
 export default function App() {
   const connect = useGameStore((state) => state.connect);
   const room = useGameStore((state) => state.room);
+  const fxVariant = useFxStore((state) => state.variant);
 
   const devScene = readDevScene();
   const roomCode = room?.roomCode ?? null;
@@ -102,7 +104,7 @@ export default function App() {
   }, []);
 
   const showWaitingRoom = room !== null && room.mode === 'pvp' && room.phase === 'waiting';
-  const fieldIntensity = room === null ? 0.4 : room.phase === 'playing' ? 1 : 0.65;
+  const fieldIntensity = room === null ? 0.32 : room.phase === 'playing' ? 1 : 0.6;
   const showLeaderboard = devScene === null;
 
   return (
@@ -110,7 +112,7 @@ export default function App() {
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
-      <InkField intensity={fieldIntensity} />
+      <InkField intensity={fieldIntensity} variant={fxVariant} />
       <div className="app-layer" id="main-content" tabIndex={-1}>
         <HeaderBar />
         {!room ? <LobbyView /> : showWaitingRoom ? <WaitingRoom /> : <ArenaView />}

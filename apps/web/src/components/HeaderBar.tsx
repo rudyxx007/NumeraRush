@@ -1,13 +1,14 @@
 import { useStatus } from '@powersync/react';
-import { ArrowLeft, Check, Pencil, Trophy } from 'lucide-react';
+import { ArrowLeft, Check, Pencil, Sparkles, Trophy } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { exitRoom } from '../lib/route';
+import { FX_VARIANTS, useFxStore } from '../store/fx-store';
 import { useGameStore } from '../store/game-store';
 
 function Readout({ tone, children }: { tone: string; children: ReactNode }) {
   return (
-    <span className="mono flex items-center gap-1.5 text-[10px] whitespace-nowrap text-ink-soft">
+    <span className="mono flex items-center gap-1.5 text-[11px] whitespace-nowrap text-ink-soft">
       <span className={`dot ${tone}`} aria-hidden="true" />
       {children}
     </span>
@@ -20,7 +21,13 @@ export function HeaderBar() {
   const wsStatus = useGameStore((state) => state.wsStatus);
   const toggleLeaderboard = useGameStore((state) => state.toggleLeaderboard);
   const inRoom = useGameStore((state) => state.room !== null);
+  const fxVariant = useFxStore((state) => state.variant);
+  const cycleFx = useFxStore((state) => state.cycleVariant);
+  const gpuSupported = useFxStore((state) => state.gpuSupported);
   const syncStatus = useStatus();
+
+  const fxChoice = FX_VARIANTS.find((choice) => choice.id === fxVariant);
+  const fxLabel = fxChoice?.label ?? 'Equation rain';
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(playerName);
@@ -114,6 +121,21 @@ export function HeaderBar() {
               <Pencil size={11} className="text-ink-faint transition group-hover:text-ink" />
             </button>
           )}
+
+          <button
+            type="button"
+            onClick={cycleFx}
+            className="btn btn-quiet px-2.5 py-1.5"
+            aria-label={`WebGPU scene: ${fxLabel}. Switch to the next scene`}
+            title={
+              gpuSupported
+                ? `WebGPU scene: ${fxLabel} — ${fxChoice?.note ?? 'ambient shader'}`
+                : 'WebGPU unavailable — using the CSS colour wash'
+            }
+          >
+            <Sparkles size={14} />
+            <span className="hidden md:inline">{fxLabel}</span>
+          </button>
 
           <button
             type="button"
