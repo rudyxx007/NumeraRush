@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { ArenaView } from './components/ArenaView';
 import { HeaderBar } from './components/HeaderBar';
 import { InkField } from './components/InkField';
@@ -9,6 +9,7 @@ import { MatchOverModal } from './components/MatchOverModal';
 import { RoundSummaryModal } from './components/RoundSummaryModal';
 import { WaitingRoom } from './components/WaitingRoom';
 import { readDevScene, seedDevScene } from './lib/dev-seed';
+import { markLobbyView, pushRoomView, replaceLobbyView, roomCodeFromUrl } from './lib/route';
 import { useGameStore } from './store/game-store';
 
 function ErrorToast() {
@@ -51,6 +52,8 @@ export default function App() {
   const room = useGameStore((state) => state.room);
 
   const devScene = readDevScene();
+  const roomCode = room?.roomCode ?? null;
+  const previousRoomCode = useRef<string | null>(null);
 
   useEffect(() => {
     if (devScene) {
@@ -60,14 +63,55 @@ export default function App() {
     connect();
   }, [connect, devScene]);
 
+  // Keep the URL in step with the active room so Back/Forward navigate views.
+  useEffect(() => {
+    const previous = previousRoomCode.current;
+    previousRoomCode.current = roomCode;
+
+    if (roomCode) {
+      pushRoomView(roomCode);
+      return;
+    }
+    if (previous && roomCodeFromUrl()) {
+      replaceLobbyView();
+    }
+  }, [roomCode]);
+
+  useEffect(() => {
+    const onPopState = (): void => {
+      const code = roomCodeFromUrl();
+      const current = useGameStore.getState().room;
+
+      if (!code) {
+        markLobbyView();
+        if (current) useGameStore.getState().leaveRoom();
+        return;
+      }
+
+      if (current && current.roomCode !== code) {
+        useGameStore.getState().leaveRoom();
+        return;
+      }
+
+      if (!current) replaceLobbyView();
+    };
+
+    window.addEventListener('popstate', onPopState);
+    markLobbyView();
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
   const showWaitingRoom = room !== null && room.mode === 'pvp' && room.phase === 'waiting';
   const fieldIntensity = room === null ? 0.4 : room.phase === 'playing' ? 1 : 0.65;
   const showLeaderboard = devScene === null;
 
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <InkField intensity={fieldIntensity} />
-      <div className="app-layer">
+      <div className="app-layer" id="main-content" tabIndex={-1}>
         <HeaderBar />
         {!room ? <LobbyView /> : showWaitingRoom ? <WaitingRoom /> : <ArenaView />}
         {showLeaderboard ? <LeaderboardDrawer /> : null}

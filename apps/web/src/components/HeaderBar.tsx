@@ -1,7 +1,8 @@
 import { useStatus } from '@powersync/react';
-import { Check, Pencil, Trophy } from 'lucide-react';
+import { ArrowLeft, Check, Pencil, Trophy } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
+import { exitRoom } from '../lib/route';
 import { useGameStore } from '../store/game-store';
 
 function Readout({ tone, children }: { tone: string; children: ReactNode }) {
@@ -18,6 +19,7 @@ export function HeaderBar() {
   const setPlayerName = useGameStore((state) => state.setPlayerName);
   const wsStatus = useGameStore((state) => state.wsStatus);
   const toggleLeaderboard = useGameStore((state) => state.toggleLeaderboard);
+  const inRoom = useGameStore((state) => state.room !== null);
   const syncStatus = useStatus();
 
   const [editing, setEditing] = useState(false);
@@ -66,7 +68,7 @@ export function HeaderBar() {
           </div>
         </div>
 
-        <div className="ml-auto flex items-center gap-3 sm:gap-5">
+        <nav aria-label="Main navigation" className="ml-auto flex items-center gap-3 sm:gap-5">
           <div className="hidden items-center gap-3 lg:flex">
             <Readout tone={wsTone}>ws {wsLabel}</Readout>
             <Readout tone={syncTone}>sqlite {syncLabel}</Readout>
@@ -122,7 +124,19 @@ export function HeaderBar() {
             <Trophy size={14} />
             <span className="hidden sm:inline">Standings</span>
           </button>
-        </div>
+
+          {inRoom ? (
+            <button
+              type="button"
+              onClick={exitRoom}
+              className="btn btn-quiet px-2.5 py-1.5"
+              aria-label="Back to lobby"
+            >
+              <ArrowLeft size={14} />
+              <span className="hidden sm:inline">Lobby</span>
+            </button>
+          ) : null}
+        </nav>
       </div>
 
       <div className="shell flex items-center gap-3 pb-2 lg:hidden">

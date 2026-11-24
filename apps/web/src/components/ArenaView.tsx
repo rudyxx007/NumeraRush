@@ -1,5 +1,6 @@
 import { BOT_PROFILES, DIFFICULTY_LABELS } from '@numera/shared';
 import { Bot, LogOut, Swords } from 'lucide-react';
+import { exitRoom } from '../lib/route';
 import { useGameStore } from '../store/game-store';
 import { CardBoard } from './CardBoard';
 import { LiveRacePanel } from './LiveRacePanel';
@@ -8,7 +9,6 @@ import { TargetBanner } from './TargetBanner';
 export function ArenaView() {
   const room = useGameStore((state) => state.room);
   const userId = useGameStore((state) => state.userId);
-  const leaveRoom = useGameStore((state) => state.leaveRoom);
 
   if (!room) return null;
 
@@ -51,7 +51,7 @@ export function ArenaView() {
               <p className="mono mt-1 text-[1.2rem] leading-none font-medium">{rivalScore}</p>
             </div>
           </div>
-          <button type="button" onClick={leaveRoom} className="btn btn-quiet px-3 py-1.5 text-xs">
+          <button type="button" onClick={exitRoom} className="btn btn-quiet px-3 py-1.5 text-xs">
             <LogOut size={13} /> Leave
           </button>
         </div>

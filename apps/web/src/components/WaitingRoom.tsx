@@ -1,13 +1,13 @@
 import { DIFFICULTY_LABELS } from '@numera/shared';
 import { Check, Copy, Loader2, LogOut, UserCheck, UserPlus } from 'lucide-react';
 import { useState } from 'react';
+import { exitRoom } from '../lib/route';
 import { useGameStore } from '../store/game-store';
 
 export function WaitingRoom() {
   const room = useGameStore((state) => state.room);
   const userId = useGameStore((state) => state.userId);
   const setReady = useGameStore((state) => state.setReady);
-  const leaveRoom = useGameStore((state) => state.leaveRoom);
   const [copied, setCopied] = useState(false);
 
   if (!room) return null;
@@ -49,7 +49,7 @@ export function WaitingRoom() {
               {copied ? <Check size={13} className="text-forest" /> : <Copy size={13} />}
               {copied ? 'Link copied' : 'Copy invite link'}
             </button>
-            <button type="button" onClick={leaveRoom} className="btn btn-quiet px-3 py-1.5">
+            <button type="button" onClick={exitRoom} className="btn btn-quiet px-3 py-1.5">
               <LogOut size={13} /> Leave
             </button>
           </div>

@@ -460,6 +460,24 @@
     box-shadow: 10px 10px 0 rgba(21, 23, 15, 0.2);
   }
 
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    padding: 0.6rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-decoration: none;
+  }
+
+  .skip-link:focus {
+    left: 0.75rem;
+    top: 0.75rem;
+  }
+
   .ink-field {
     position: fixed;
     inset: 0;

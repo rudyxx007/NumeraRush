@@ -1,4 +1,5 @@
 import { ArrowLeft, RotateCcw, X } from 'lucide-react';
+import { exitRoom } from '../lib/route';
 import { useGameStore } from '../store/game-store';
 
 function formatSolve(ms: number): string {
@@ -9,7 +10,6 @@ export function MatchOverModal() {
   const matchOver = useGameStore((state) => state.matchOver);
   const userId = useGameStore((state) => state.userId);
   const rematch = useGameStore((state) => state.rematch);
-  const leaveRoom = useGameStore((state) => state.leaveRoom);
   const dismiss = useGameStore((state) => state.dismissMatchOver);
 
   if (!matchOver) return null;
@@ -172,7 +172,7 @@ export function MatchOverModal() {
               <button type="button" onClick={rematch} className="btn btn-solid btn-lg flex-1">
                 <RotateCcw size={15} /> Rematch
               </button>
-              <button type="button" onClick={leaveRoom} className="btn btn-quiet btn-lg flex-1">
+              <button type="button" onClick={exitRoom} className="btn btn-quiet btn-lg flex-1">
                 <ArrowLeft size={15} /> Back to lobby
               </button>
             </div>
