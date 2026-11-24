@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #e7e9dd;
-  --color-card: #f3f4ec;
-  --color-sunk: #dde0d1;
-  --color-ink: #15170f;
-  --color-ink-soft: #4a4f41;
-  --color-ink-faint: #757b6a;
-  --color-rule: #c1c6b3;
-  --color-ultra: #1f39cf;
-  --color-saffron: #e6a417;
-  --color-forest: #0f6b47;
-  --color-rust: #bd341b;
+  --color-paper: #e9ebe0;
+  --color-card: #f8f8f1;
+  --color-sunk: #dcdfcf;
+  --color-ink: #101208;
+  --color-ink-soft: #464b3c;
+  --color-ink-faint: #5f6455;
+  --color-rule: #bcc2ac;
+  --color-ultra: #1a2fd0;
+  --color-saffron: #e9a30f;
+  --color-forest: #0b6a45;
+  --color-rust: #b3301a;
 
-  --font-display: "Spectral", "Iowan Old Style", Georgia, serif;
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -34,15 +34,18 @@
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: 15px;
-    line-height: 1.55;
+    line-height: 1.58;
     -webkit-font-smoothing: antialiased;
-    background-image: repeating-linear-gradient(
-        to right,
-        rgba(21, 23, 15, 0.045) 0 1px,
-        transparent 1px 40px
-      ), repeating-linear-gradient(to bottom, rgba(21, 23, 15, 0.045) 0 1px, transparent 1px 40px),
-      repeating-linear-gradient(to right, rgba(21, 23, 15, 0.075) 0 1px, transparent 1px 200px),
-      repeating-linear-gradient(to bottom, rgba(21, 23, 15, 0.075) 0 1px, transparent 1px 200px);
+    background-image: radial-gradient(
+        60rem 42rem at 8% -12%,
+        rgba(26, 47, 208, 0.12),
+        transparent 65%
+      ), radial-gradient(48rem 36rem at 96% 4%, rgba(233, 163, 15, 0.14), transparent 68%),
+      radial-gradient(44rem 32rem at 52% 112%, rgba(11, 106, 69, 0.1), transparent 70%),
+      repeating-linear-gradient(to right, rgba(16, 18, 8, 0.04) 0 1px, transparent 1px 40px),
+      repeating-linear-gradient(to bottom, rgba(16, 18, 8, 0.04) 0 1px, transparent 1px 40px),
+      repeating-linear-gradient(to right, rgba(16, 18, 8, 0.07) 0 1px, transparent 1px 200px),
+      repeating-linear-gradient(to bottom, rgba(16, 18, 8, 0.07) 0 1px, transparent 1px 200px);
   }
 
   ::selection {
@@ -82,8 +85,10 @@
   .display {
     font-family: var(--font-display);
     font-weight: 600;
-    letter-spacing: -0.028em;
-    line-height: 0.99;
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 0, "WONK" 0;
+    letter-spacing: -0.022em;
+    line-height: 1.02;
   }
 
   .mono {
@@ -266,6 +271,11 @@
   .tile:hover:not(:disabled) {
     transform: translate(-2px, -2px);
     box-shadow: 3px 3px 0 var(--color-ink);
+    background-image: radial-gradient(
+      130px 96px at 82% -6%,
+      rgba(255, 255, 255, 0.72),
+      transparent 72%
+    );
   }
 
   .tile[aria-pressed="true"] {
@@ -458,6 +468,26 @@
     border: 1px solid var(--color-ink);
     border-radius: 2px;
     box-shadow: 10px 10px 0 rgba(21, 23, 15, 0.2);
+  }
+
+  /* Soft paper halo that keeps the hero copy crisp over the WebGPU scene. */
+  .hero-copy {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .hero-copy::before {
+    content: "";
+    position: absolute;
+    inset: -1.5rem -2rem -2rem -2rem;
+    z-index: -1;
+    background: radial-gradient(
+      125% 105% at 18% 42%,
+      rgba(233, 235, 224, 0.86),
+      rgba(233, 235, 224, 0.62) 58%,
+      transparent 80%
+    );
+    pointer-events: none;
   }
 
   .skip-link {

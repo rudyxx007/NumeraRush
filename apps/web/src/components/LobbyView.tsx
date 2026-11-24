@@ -61,17 +61,17 @@ export function LobbyView() {
   return (
     <main className="pb-20 pt-10 sm:pt-14">
       <section className="shell grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-x-16 lg:gap-y-9">
-        <div className="lg:col-start-1 lg:row-start-1">
+        <div className="hero-copy lg:col-start-1 lg:row-start-1">
           <div className="rise flex flex-wrap items-center gap-3">
-            <span className="mono text-[10px] tracking-[0.14em] text-ink-soft">
+            <span className="mono text-[11px] tracking-[0.14em] text-ink-soft">
               server-authoritative
             </span>
             <span className="h-3 w-px bg-rule" aria-hidden="true" />
-            <span className="mono text-[10px] tracking-[0.14em] text-ink-soft">
+            <span className="mono text-[11px] tracking-[0.14em] text-ink-soft">
               exact rationals
             </span>
             <span className="hidden h-3 w-px bg-rule sm:block" aria-hidden="true" />
-            <span className="mono hidden text-[10px] tracking-[0.14em] text-ink-soft sm:inline">
+            <span className="mono hidden text-[11px] tracking-[0.14em] text-ink-soft sm:inline">
               two players
             </span>
           </div>
@@ -196,13 +196,13 @@ export function LobbyView() {
 
         <div className="lg:col-start-1 lg:row-start-2">
           <figure className="rise border-y border-ink py-6">
-            <figcaption className="mono text-[10px] tracking-[0.14em] text-ink-soft">
+            <figcaption className="mono text-[11px] tracking-[0.14em] text-ink-soft">
               solved board, easy tier
             </figcaption>
             <div className="mt-3">
               <ProofExpression />
             </div>
-            <p className="mono mt-3 text-[10px] text-ink-soft">
+            <p className="mono mt-3 text-[11px] text-ink-soft">
               4 cards used once, 3 merges, trace replayed and verified server-side
             </p>
           </figure>
@@ -218,7 +218,7 @@ export function LobbyView() {
             ].map((stat) => (
               <div key={stat.label}>
                 <div className="display text-[2rem] leading-none">{stat.value}</div>
-                <div className="mono mt-1 text-[10px] leading-tight text-ink-soft">
+                <div className="mono mt-1 text-[11px] leading-tight text-ink-soft">
                   {stat.label}
                 </div>
               </div>
@@ -312,11 +312,48 @@ export function LobbyView() {
         </div>
       </section>
 
-      <footer className="shell mt-12 flex flex-wrap items-baseline justify-between gap-3 border-t border-ink pt-4">
-        <span className="mono text-[10px] text-ink-soft">
+      <section className="shell mt-14">
+        <div className="flex flex-wrap items-end justify-between gap-2 border-t border-ink pt-5">
+          <h2 className="display text-[clamp(1.45rem,2.4vw,1.85rem)]">A round, in three moves</h2>
+          <span className="mono text-[11px] text-ink-soft">
+            one clock, both players, the same deal
+          </span>
+        </div>
+
+        <ol className="mt-5 grid gap-px overflow-hidden border border-ink bg-rule sm:grid-cols-3">
+          {[
+            {
+              index: '01',
+              title: 'Deal',
+              body: 'Four to seven cards land on both boards, plus a target inside the tier window.',
+            },
+            {
+              index: '02',
+              title: 'Merge',
+              body: 'Pick a card, an operator, then a second card. Every merge is an exact rational, checked server-side.',
+            },
+            {
+              index: '03',
+              title: 'Hit it',
+              body: 'Use every card to land exactly on the target before your rival. Speed sets the points.',
+            },
+          ].map((step) => (
+            <li key={step.index} className="bg-paper px-5 py-6">
+              <span className="mono text-[10px] tracking-[0.16em] text-ultra">{step.index}</span>
+              <h3 className="display mt-3 text-[1.35rem]">{step.title}</h3>
+              <p className="mt-2 max-w-[34ch] text-[13px] leading-[1.6] text-ink-soft">
+                {step.body}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <footer className="shell mt-10 flex flex-wrap items-baseline justify-between gap-3 border-t border-ink pt-4">
+        <span className="mono text-[11px] text-ink-soft">
           every merge is an exact rational, scored server-side
         </span>
-        <span className="mono text-[10px] text-ink-soft">
+        <span className="mono text-[11px] text-ink-soft">
           race + standings read from a local PowerSync replica
         </span>
       </footer>
