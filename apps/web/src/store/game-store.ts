@@ -18,6 +18,7 @@ import {
   clearReconnectSession,
   saveReconnectSession,
 } from '../lib/ws-client';
+import { useFxStore } from './fx-store';
 
 const PLAYER_NAME_KEY = 'numera-rush:player-name';
 const DEFAULT_PLAYER_NAME = 'Player';
@@ -113,7 +114,9 @@ export const useGameStore = create<GameStore>((set, get) => {
         break;
       }
 
-      case 'BOARD_UPDATE':
+      case 'BOARD_UPDATE': {
+        const previous = get().room;
+        const merged = previous !== null && message.cards.length < previous.cards.length;
         set((state) =>
           state.room
             ? {
@@ -126,7 +129,9 @@ export const useGameStore = create<GameStore>((set, get) => {
               }
             : {},
         );
+        if (merged) useFxStore.getState().triggerPulse('merge');
         break;
+      }
 
       case 'OPPONENT_PROGRESS':
         set((state) =>
@@ -146,6 +151,9 @@ export const useGameStore = create<GameStore>((set, get) => {
         break;
 
       case 'ROUND_OVER':
+        if (message.winnerUserId !== null) {
+          useFxStore.getState().triggerPulse('solve');
+        }
         set((state) => ({
           roundSummary: message,
           deadlineLocalMs: null,

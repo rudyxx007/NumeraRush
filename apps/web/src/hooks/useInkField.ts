@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { type InkField, type InkVariant, createInkField } from '../lib/ink-field';
 import { useFxStore } from '../store/fx-store';
+import type { PulseKind } from '../store/fx-store';
 
 /** Phones keep the scene, but at a lower density so copy stays comfortable. */
 function scaledIntensity(value: number): number {
@@ -17,6 +18,7 @@ export function useInkField(
 ): React.RefObject<HTMLCanvasElement | null> {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fieldRef = useRef<InkField | null>(null);
+  const pendingPulseRef = useRef<PulseKind | null>(null);
   const intensityRef = useRef(intensity);
   const variantRef = useRef(variant);
   intensityRef.current = intensity;
@@ -42,6 +44,10 @@ export function useInkField(
         }
         field.setIntensity(scaledIntensity(intensityRef.current));
         field.setVariant(variantRef.current);
+        if (pendingPulseRef.current) {
+          field.pulse(pendingPulseRef.current);
+          pendingPulseRef.current = null;
+        }
         fieldRef.current = field;
         useFxStore.getState().setGpuSupported(true);
       });
@@ -71,6 +77,16 @@ export function useInkField(
   useEffect(() => {
     fieldRef.current?.setVariant(variant);
   }, [variant]);
+
+  const pulse = useFxStore((state) => state.pulse);
+  useEffect(() => {
+    if (!pulse) return;
+    if (fieldRef.current) {
+      fieldRef.current.pulse(pulse.kind);
+    } else {
+      pendingPulseRef.current = pulse.kind;
+    }
+  }, [pulse]);
 
   useEffect(() => {
     const onPointerMove = (event: PointerEvent): void => {

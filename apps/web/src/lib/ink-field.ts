@@ -5,13 +5,21 @@
  * so the CSS wash can carry the page instead.
  */
 
-export type InkVariant = 'equations' | 'merge' | 'target' | 'ribbons' | 'chrome' | 'aurora';
+export type InkVariant =
+  | 'equations'
+  | 'merge'
+  | 'target'
+  | 'ribbons'
+  | 'chrome'
+  | 'aurora'
+  | 'surge';
 
 export const INK_VARIANT_INDEX: Record<InkVariant, number> = {
   ribbons: 0,
   chrome: 1,
   aurora: 2,
   target: 3,
+  surge: 6,
   merge: 4,
   equations: 5,
 };
@@ -31,6 +39,10 @@ struct Uniforms {
   pointer: vec2f,
   mode: f32,
   aspect: f32,
+  pulse: f32,
+  pulseKind: f32,
+  _pad0: f32,
+  _pad1: f32,
 };
 
 @group(0) @binding(0) var<uniform> uni: Uniforms;
@@ -280,6 +292,24 @@ fn mode_aurora(p: vec2f, t: f32, ptr: vec2f) -> vec4f {
   return vec4f(color, alpha);
 }
 
+/* ---------------------------------------------------------------- */
+/* Surge: calm field that bursts on a merge or a solve.               */
+/* ---------------------------------------------------------------- */
+fn mode_surge(p: vec2f, t: f32, ptr: vec2f) -> vec4f {
+  let base = mode_ribbons(p, t, ptr);
+  let age = clamp(uni.pulse, 0.0, 1.0);
+  let kind = uni.pulseKind;
+  let center = ptr * 0.45;
+  let d = length(p - center);
+  let radius = 0.08 + (1.0 - age) * 1.05;
+  let ring = exp(-abs(d - radius) * 26.0) * age;
+  let tint = mix(SAFFRON, PINE, kind);
+  let color = base.rgb + tint * ring * 1.5;
+  let sparks = pow(max(0.0, 1.0 - d * 0.9), 6.0) * age * age;
+  let alpha = clamp(base.a + ring * 0.5 + sparks * 0.35, 0.0, 0.85);
+  return vec4f(color, alpha);
+}
+
 @fragment
 fn fs(@builtin(position) position: vec4f) -> @location(0) vec4f {
   let res = max(uni.resolution, vec2f(1.0, 1.0));
@@ -301,6 +331,8 @@ fn fs(@builtin(position) position: vec4f) -> @location(0) vec4f {
     sampled = mode_target(p, t, ptr);
   } else if (mode == 4) {
     sampled = mode_merge(p, t, ptr);
+  } else if (mode == 6) {
+    sampled = mode_surge(p, t, ptr);
   }
 
   let vignette = 1.0 - smoothstep(0.28, 0.98, length(p * vec2f(0.72, 1.0)));
@@ -315,12 +347,13 @@ fn fs(@builtin(position) position: vec4f) -> @location(0) vec4f {
 }
 `;
 
-const UNIFORM_BYTES = 32;
+const UNIFORM_BYTES = 48;
 
 export interface InkField {
   setIntensity(value: number): void;
   setVariant(variant: InkVariant): void;
   setPointer(x: number, y: number): void;
+  pulse(kind: 'merge' | 'solve'): void;
   destroy(): void;
 }
 
@@ -486,7 +519,9 @@ export async function createInkField(canvas: HTMLCanvasElement): Promise<InkFiel
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const started = performance.now();
   let intensity = 0.35;
-  let mode = INK_VARIANT_INDEX.equations;
+  let mode = INK_VARIANT_INDEX.ribbons;
+  let pulseStartSeconds = -10.0;
+  let pulseKind = 0.0;
   let targetX = 0.5;
   let targetY = 0.5;
   let pointerX = 0.5;
@@ -515,6 +550,13 @@ export async function createInkField(canvas: HTMLCanvasElement): Promise<InkFiel
     data[5] = pointerY;
     data[6] = mode;
     data[7] = canvas.width / Math.max(canvas.height, 1);
+    const pulseAge = reducedMotion ? 10.0 : (now - started) / 1000.0 - pulseStartSeconds;
+    let pulseValue = 0.0;
+    if (pulseAge >= 0.0 && pulseAge < 1.2) {
+      pulseValue = 1.0 - pulseAge / 1.2;
+    }
+    data[8] = pulseValue;
+    data[9] = pulseKind;
     device.queue.writeBuffer(uniforms, 0, data);
 
     const encoder = device.createCommandEncoder();
@@ -571,6 +613,10 @@ export async function createInkField(canvas: HTMLCanvasElement): Promise<InkFiel
     setPointer(x: number, y: number): void {
       targetX = Math.max(0, Math.min(1, x));
       targetY = Math.max(0, Math.min(1, y));
+    },
+    pulse(kind: 'merge' | 'solve'): void {
+      pulseStartSeconds = (performance.now() - started) / 1000;
+      pulseKind = kind === 'solve' ? 1 : 0;
     },
     destroy(): void {
       disposed = true;

@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import type { InkVariant } from '../lib/ink-field';
 
+export type PulseKind = 'merge' | 'solve';
+
 export interface FxChoice {
   id: InkVariant;
   label: string;
@@ -8,10 +10,11 @@ export interface FxChoice {
 }
 
 export const FX_VARIANTS: readonly FxChoice[] = [
+  { id: 'ribbons', label: 'Ink ribbons', note: 'domain-warped silk contours' },
+  { id: 'surge', label: 'Game pulse', note: 'bursts on a merge or a solve' },
   { id: 'equations', label: 'Equation rain', note: 'digits and operators drifting in depth' },
   { id: 'merge', label: 'Merge cascade', note: 'two cards collapsing into one, over and over' },
   { id: 'target', label: 'Target rings', note: 'a radar sweep that tracks your cursor' },
-  { id: 'ribbons', label: 'Ink ribbons', note: 'domain-warped silk contours' },
   { id: 'chrome', label: 'Liquid chrome', note: 'specular metallic pools' },
   { id: 'aurora', label: 'Graph aurora', note: 'light curtains over an exact grid' },
 ];
@@ -26,20 +29,23 @@ function readVariant(): InkVariant {
   } catch {
     // Storage can be unavailable; fall through to the default scene.
   }
-  return 'equations';
+  return 'ribbons';
 }
 
 interface FxStore {
   variant: InkVariant;
   gpuSupported: boolean;
+  pulse: { kind: PulseKind; at: number } | null;
   setVariant: (variant: InkVariant) => void;
   cycleVariant: () => void;
   setGpuSupported: (supported: boolean) => void;
+  triggerPulse: (kind: PulseKind) => void;
 }
 
 export const useFxStore = create<FxStore>((set, get) => ({
   variant: readVariant(),
   gpuSupported: false,
+  pulse: null,
 
   setVariant: (variant) => {
     try {
@@ -58,4 +64,6 @@ export const useFxStore = create<FxStore>((set, get) => ({
   },
 
   setGpuSupported: (gpuSupported) => set({ gpuSupported }),
+
+  triggerPulse: (kind) => set({ pulse: { kind, at: performance.now() } }),
 }));
