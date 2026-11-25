@@ -27,7 +27,6 @@ export function MatchOverModal() {
     <div className="veil">
       <dialog
         ref={dialogRef}
-        open
         aria-modal="true"
         aria-label="Match results"
         className="static m-auto w-full max-w-2xl border-0 bg-transparent p-0 text-ink"

@@ -21,7 +21,6 @@ export function RoundSummaryModal() {
     <div className="veil">
       <dialog
         ref={dialogRef}
-        open
         aria-modal="true"
         aria-label={`Round ${summary.roundNumber} summary`}
         className="static m-auto w-full max-w-lg border-0 bg-transparent p-0 text-ink"
