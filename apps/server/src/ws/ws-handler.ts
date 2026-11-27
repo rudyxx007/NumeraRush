@@ -103,6 +103,10 @@ export function registerWsHandler(app: FastifyInstance, deps: WsHandlerDeps): vo
         case 'SET_READY':
           deps.rooms.setReady(userId, message.ready);
           break;
+        case 'SET_NAME':
+          state.playerName = message.playerName;
+          deps.rooms.updatePlayerName(userId, message.playerName);
+          break;
         case 'MAKE_MOVE':
           if (!state.roomCode) {
             fail('ROOM_NOT_FOUND', 'Join a room before making moves');

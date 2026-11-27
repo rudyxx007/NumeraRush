@@ -237,6 +237,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       const cleaned = name.trim().slice(0, 24) || DEFAULT_PLAYER_NAME;
       persistPlayerName(cleaned);
       set({ playerName: cleaned });
+      client?.send({ type: 'SET_NAME', playerName: cleaned });
     },
 
     toggleLeaderboard: (open) => {

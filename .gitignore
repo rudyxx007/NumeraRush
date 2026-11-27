@@ -35,3 +35,7 @@ numerarush_implementation_plan.md
 
 # Local transcript export scratch
 transcript/
+transcripts/
+
+# Local codebase snapshot dump
+numerarush-codebase.txt

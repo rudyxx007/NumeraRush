@@ -216,6 +216,18 @@ export class RoomManager {
     this.persistProgress(room);
   }
 
+  /** Mirror a live display-name edit into the room, peers, and replica rows. */
+  updatePlayerName(userId: string, playerName: string): void {
+    const room = this.findRoomByUser(userId);
+    const player = room?.players.get(userId);
+    if (!room || !player) return;
+
+    player.playerName = playerName;
+    this.touch(room);
+    this.broadcastRoomState(room);
+    this.persistProgress(room);
+  }
+
   handleMove(userId: string, message: MakeMoveMessage): void {
     const room = this.findRoomByUser(userId);
     const player = room?.players.get(userId);

@@ -433,4 +433,27 @@ describe('RoomManager', () => {
     expect(guestSocket.last('BOARD_UPDATE')).toBeUndefined();
     expect(guestSocket.last('ROOM_STATE')?.movesCompleted).toBe(0);
   });
+
+  it('propagates a live display-name change to the room and persisted progress', async () => {
+    const repo = new MockRepo();
+    const manager = makeManager(repo);
+    const hostSocket = new FakeSocket();
+
+    manager.createRoom(
+      { userId: 'u1', playerName: 'Host', socket: hostSocket },
+      { difficulty: 'easy', totalRounds: 1, mode: 'pvp' },
+    );
+
+    manager.updatePlayerName('u1', 'Renamed');
+
+    const state = hostSocket.last('ROOM_STATE');
+    expect(state?.players.find((player) => player.userId === 'u1')?.playerName).toBe('Renamed');
+
+    await flushMicrotasks();
+    expect(repo.progress.get('ABC123:u1')?.player_name).toBe('Renamed');
+
+    manager.updatePlayerName('missing-user', 'Ghost');
+    await flushMicrotasks();
+    expect(repo.progress.get('ABC123:u1')?.player_name).toBe('Renamed');
+  });
 });

@@ -126,6 +126,11 @@ export const SetReadyMessageSchema = z.object({
   ready: z.boolean(),
 });
 
+export const SetNameMessageSchema = z.object({
+  type: z.literal('SET_NAME'),
+  playerName: PlayerNameSchema,
+});
+
 export const MakeMoveMessageSchema = z.object({
   type: z.literal('MAKE_MOVE'),
   roundNumber: z.number().int().nonnegative(),
@@ -158,6 +163,7 @@ export const ClientMessageSchema = z.discriminatedUnion('type', [
   JoinRoomMessageSchema,
   ReconnectRoomMessageSchema,
   SetReadyMessageSchema,
+  SetNameMessageSchema,
   MakeMoveMessageSchema,
   UndoMoveMessageSchema,
   ResetBoardMessageSchema,
@@ -171,6 +177,7 @@ export type CreateRoomMessage = z.infer<typeof CreateRoomMessageSchema>;
 export type JoinRoomMessage = z.infer<typeof JoinRoomMessageSchema>;
 export type ReconnectRoomMessage = z.infer<typeof ReconnectRoomMessageSchema>;
 export type SetReadyMessage = z.infer<typeof SetReadyMessageSchema>;
+export type SetNameMessage = z.infer<typeof SetNameMessageSchema>;
 export type MakeMoveMessage = z.infer<typeof MakeMoveMessageSchema>;
 export type UndoMoveMessage = z.infer<typeof UndoMoveMessageSchema>;
 export type ResetBoardMessage = z.infer<typeof ResetBoardMessageSchema>;

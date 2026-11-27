@@ -52,3 +52,11 @@ export const isSupabaseConfigured = isUsableSupabaseConfig(
   env.SUPABASE_URL,
   env.SUPABASE_SERVICE_ROLE_KEY,
 );
+
+// Production must never start in dev mode: without credentials every token
+// would be trusted and gameplay would run authority-free.
+if (env.NODE_ENV === 'production' && !isSupabaseConfigured) {
+  throw new Error(
+    'INVALID_ENV: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required when NODE_ENV=production',
+  );
+}
