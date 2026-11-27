@@ -29,3 +29,9 @@ coverage/
 *.sqlite
 # Local review screenshots
 .preview/
+
+# Locked product spec kept offline in the working tree only
+numerarush_implementation_plan.md
+
+# Local transcript export scratch
+transcript/
